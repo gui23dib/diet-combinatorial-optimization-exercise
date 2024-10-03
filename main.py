@@ -6,6 +6,9 @@ def get_user_input() -> int:
     choice = int(input("Digite a opção desejada: "))
     return 1200 + 400 * choice
 
+def get_best_fitting_food(data, obj_kcal, carb, prot, fat, distribuicao) -> str:
+    return data[0]
+
 if __name__ == '__main__':
     data = fetch_food_data(True)
 
@@ -15,4 +18,6 @@ if __name__ == '__main__':
     refeicoes = [(None, 0.3), (None, 0.5), (None, 0.2)] # 3 refeicoes
 
     for refeicao, distribucao in refeicoes:
-        pass
+        refeicao = get_best_fitting_food(data, obj_kcal, carb, prot, fat, distribucao)
+        print(refeicao, distribucao)
+        # fazer a distribuição de macros aqui

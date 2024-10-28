@@ -31,9 +31,9 @@ def gen_alg():
     if True:
         try:
             word_obj: str = str(input()).upper()
-            objective = (1000, 0, 0, 0)
+            objective = [ord(e) for e in word_obj]
 
-            max_iterations: int = 100000
+            max_iterations: int = 1000000
             gen_count: int = 0
 
             population: PopulationClass = PopulationClass()
@@ -60,3 +60,6 @@ def gen_alg():
         print("All generations have been processed.")
         print(f"Total generations: {gen_count}")
         print(f"Best chromosome: {[chr(e) for e in population.population[0].value]} {population.best_fitness}", end="")
+
+if __name__ == '__main__':
+    gen_alg()

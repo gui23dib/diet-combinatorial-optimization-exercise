@@ -37,7 +37,7 @@ def gen_alg():
             gen_count: int = 0
 
             population: PopulationClass = PopulationClass()
-            population.populate(len(objective), len(word_obj) * 10)
+            population.populate(len(objective), len(word_obj) * 10, 100)
 
             while population.best_fitness != 1.0 and gen_count <= max_iterations:
                 population.population = fitness(population.population, objective)

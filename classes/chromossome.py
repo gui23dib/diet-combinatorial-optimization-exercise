@@ -8,13 +8,13 @@ class ChromosomeClass:
     def reproduce(self, other, crossover_point: int):
         return ChromosomeClass(self.value[:crossover_point] + other.value[crossover_point:])
 
-    def mutate(self, mutation_rate: float = 0.05):
+    def mutate(self, mutation_rate: float = 0.05, id_range: int = 90):
         for i in range(len(self.value)):
             if random.random() < mutation_rate:
-                new_gene = random.randint(65, 90)
+                new_gene = random.randint(1, id_range)
 
                 while self.value[i] == new_gene: # avoid gene repetition
-                    new_gene = random.randint(65, 90)
+                    new_gene = random.randint(1, id_range)
 
                 self.value[i] = new_gene
 

@@ -1,6 +1,8 @@
 import math
 import random
 
+#food --> cidades
+
 class AntColony:
     def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha=1, beta=1):
         """

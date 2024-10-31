@@ -18,3 +18,9 @@ def print_stats(population: PopulationClass, generation: int):
     print("Worst -> ", end="")
     print_chromossome(population.population[-1], True)
     print()
+
+def get_user_input() -> int:
+    print("ESCOLHA SEU PLANO:")
+    print("1 - perder peso\n2 - manutenção de peso\n3 - ganhar peso")
+    choice = int(input("Digite a opção desejada: "))
+    return 1200 + 400 * choice

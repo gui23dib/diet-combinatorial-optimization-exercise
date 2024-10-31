@@ -1,6 +1,7 @@
 from data.fetcher import load_nutrition_data
 from classes.nutrition import Nutrition
 import utils
+import genetic_alg
 
 
 def get_data_overall_fitness(df: list[Nutrition], carb, prot, fat) -> list[Nutrition]:

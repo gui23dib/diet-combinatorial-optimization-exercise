@@ -11,14 +11,14 @@ def get_data_overall_fitness(df: list[Nutrition], carb, prot, fat) -> list[Nutri
             df.remove(row)
             continue
         
-        carb_pctg = abs(carb - (row.carbohydrate / total_macros))
-        prot_pctg = abs(prot - (row.protein / total_macros))
-        fat_pctg = abs(fat - (row.fat / total_macros))
-        row.macro_fit = 1 / (1 + (carb_pctg + prot_pctg + fat_pctg))
+        fit_medio += abs(carb - (row.carbohydrate / total_macros))
+        fit_medio  += abs(prot - (row.protein / total_macros))
+        fit_medio += abs(fat - (row.fat / total_macros))
+        row.macro_fit = 1 / (1 + (fit_medio / 3))
     return df
 
 if __name__ == '__main__':
-    data: list[Nutrition] = load_nutrition_data('data/nutrition.csv')
+    data: list[Nutrition] = load_nutrition_data('data/nutrition_withouth_0_calories.csv')
 
     obj_kcal = utils.get_user_input()
     carb, prot, fat = (0.5, 0.3, 0.2)

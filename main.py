@@ -30,3 +30,10 @@ if __name__ == '__main__':
         #refeicao = genetic_alg(data, (distribuicao * obj_kcal))
         #refeicao = ant_colony(data, (distribuicao * obj_kcal))
         print(refeicao, distribuicao)
+
+"""
+diff_cal = abs(obj_kcal - data[i].calories)
+diff_macro = abs(1 - data[i].macro_fit)
+
+fit = 1 / ((diff_cal * 0.6) + (diff_macro * 0.4) + 1)
+"""

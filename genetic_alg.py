@@ -61,5 +61,7 @@ def gen_alg():
         print(f"Total generations: {gen_count}")
         print(f"Best chromosome: {[chr(e) for e in population.population[0].value]} {population.best_fitness}", end="")
 
+de
+
 if __name__ == '__main__':
     gen_alg()

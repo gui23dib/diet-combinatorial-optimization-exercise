@@ -18,7 +18,7 @@ def get_data_overall_fitness(df: list[Nutrition], carb, prot, fat) -> list[Nutri
     return df
 
 if __name__ == '__main__':
-    data: list[Nutrition] = load_nutrition_data('data/nutrition_withouth_0_calories.csv')
+    data: list[Nutrition] = load_nutrition_data('/nutrition_withouth_0_calories.csv')
 
     obj_kcal = utils.get_user_input()
     carb, prot, fat = (0.5, 0.3, 0.2)

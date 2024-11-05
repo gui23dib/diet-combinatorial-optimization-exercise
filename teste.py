@@ -5,7 +5,7 @@ import heapq
 
 
 if __name__ == '__main__':
-    nodes: list[Nutrition] = fetcher.load_nutrition_data('data/nutrition_macro_fixed.csv')
+    nodes: list[Nutrition] = fetcher.load_nutrition_data('data/sample_nutrition_data.csv')
 
     obj_kcal = 1800 #utils.get_user_input()
     refeicoes = [(None, 0.1), (None, 0.6), (None, 0.3)]

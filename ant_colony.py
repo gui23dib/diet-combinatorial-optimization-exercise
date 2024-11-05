@@ -1,104 +1,102 @@
-import math
 import random
 
-#food --> cidades
+class Ant:
+    def __init__(self, nodes, target_value):
+        self.nodes = nodes
+        self.target_value = target_value
+        self.path = []
+        self.total = 0
 
-class AntColony:
-    def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha=1, beta=1):
-        """
-        Args:
-            distances (2D list): Square matrix of distances. Diagonal is assumed to be math.inf.
-            n_ants (int): Number of ants running per iteration
-            n_best (int): Number of best ants who deposit pheromone
-            n_iterations (int): Number of iterations
-            decay (float): Pheromone decay rate. 0.95 means slow decay, 0.5 faster decay.
-            alpha (float): Weight of pheromone, higher alpha emphasizes pheromone. Default=1
-            beta (float): Weight of distance, higher beta emphasizes distance. Default=1
-        """
-        self.distances = distances
-        self.pheromone = [[1 / len(distances) for _ in row] for row in distances]
-        self.all_inds = list(range(len(distances)))
+    def walk(self):
+        # Reset path and total
+        self.path = []
+        self.total = 0
+        
+        # Continue walking until we reach or exceed the target
+        while self.total < self.target_value:
+            next_node = random.choice(self.nodes)
+            self.path.append(next_node)
+            self.total += next_node
+            
+            # Allow breaking if total goes over to avoid endless loops
+            if self.total > self.target_value:
+                break
+
+class AntColonyOptimizer:
+    def __init__(self, nodes, target_value, n_ants, n_iterations, evaporation_rate, pheromone_intensity):
+        self.nodes = nodes
+        self.target_value = target_value
         self.n_ants = n_ants
-        self.n_best = n_best
         self.n_iterations = n_iterations
-        self.decay = decay
-        self.alpha = alpha
-        self.beta = beta
-
+        self.evaporation_rate = evaporation_rate
+        self.pheromone_intensity = pheromone_intensity
+        
+        # Initialize pheromone levels for each node
+        self.pheromones = {node: 1.0 for node in nodes}
+        
     def run(self):
-        shortest_path = None
-        all_time_shortest_path = (None, math.inf)
+        best_path = None
+        best_total = float('inf')
         
-        for _ in range(self.n_iterations):
-            all_paths = self.gen_all_paths()
-            self.spread_pheromone(all_paths, self.n_best)
-            shortest_path = min(all_paths, key=lambda x: x[1])
+        for iteration in range(self.n_iterations):
+            all_paths = []
+            
+            # Create ants and let them generate paths
+            for _ in range(self.n_ants):
+                ant = Ant(self.nodes, self.target_value)
+                ant.walk()
+                all_paths.append((ant.path, ant.total))
+                
+                # Update best path if the current path is closer to the target
+                if abs(ant.total - self.target_value) < abs(best_total - self.target_value):
+                    best_path = ant.path
+                    best_total = ant.total
 
-            if shortest_path[1] < all_time_shortest_path[1]:
-                all_time_shortest_path = shortest_path
-
-            # Apply pheromone decay
-            self.pheromone = [[p * self.decay for p in row] for row in self.pheromone]
-
-        return all_time_shortest_path
-
-    def spread_pheromone(self, all_paths, n_best):
-        # Deposit pheromone on the best paths
-        sorted_paths = sorted(all_paths, key=lambda x: x[1])
-        for path, dist in sorted_paths[:n_best]:
-            for move in path:
-                self.pheromone[move[0]][move[1]] += 1.0 / dist
-
-    def gen_path_dist(self, path):
-        # Calculate total distance of a path
-        return sum(self.distances[move[0]][move[1]] for move in path)
-
-    def gen_all_paths(self):
-        # Generate all paths for this iteration
-        all_paths = []
-        for _ in range(self.n_ants):
-            path = self.gen_path(0)
-            total_dist = self.gen_path_dist(path)
-            all_paths.append((path, total_dist))
-        return all_paths
-
-    def gen_path(self, start):
-        # Generate a path starting from a given node
-        path = []
-        visited = {start}
-        prev = start
-
-        for _ in range(len(self.distances) - 1):
-            move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
-            path.append((prev, move))
-            visited.add(move)
-            prev = move
-
-        path.append((prev, start))  # Return to the starting node
-        return path
-
-    def pick_move(self, pheromone, dist, visited):
-        # Choose the next move based on pheromone and distance
-        pheromone = [p if i not in visited else 0 for i, p in enumerate(pheromone)]
-        weights = [(p ** self.alpha) * ((1 / d) ** self.beta) if d != 0 else 0
-                    for p, d in zip(pheromone, dist)]
+            # Update pheromones based on paths
+            self.update_pheromones(all_paths)
+            
+            print(f"Iteration {iteration + 1}, Best Path: {best_path}, Best Total: {best_total}")
         
-        total = sum(weights)
-        if total == 0:
-            return random.choice([i for i in self.all_inds if i not in visited])
+        return best_path, best_total
 
-        probabilities = [w / total for w in weights]
-        return random.choices(self.all_inds, probabilities)[0]
+    def update_pheromones(self, paths):
+        # Evaporate some pheromone from all nodes
+        for node in self.pheromones:
+            self.pheromones[node] *= (1 - self.evaporation_rate)
+        
+        # Add pheromones based on path quality
+        for path, total in paths:
+            distance_to_target = abs(total - self.target_value)
+            if distance_to_target == 0:
+                pheromone_deposit = self.pheromone_intensity
+            else:
+                pheromone_deposit = self.pheromone_intensity / distance_to_target
 
-if __name__ == '__main__':
-    distances = [
-        [math.inf, 2, 2, 5, 7],
-        [2, math.inf, 4, 8, 2],
-        [2, 4, math.inf, 1, 3],
-        [5, 8, 1, math.inf, 2],
-        [7, 2, 3, 2, math.inf]
-    ]
+            for node in path:
+                self.pheromones[node] += pheromone_deposit
 
-    ant_colony = AntColony(distances, n_ants=1, n_best=1, n_iterations=100, decay=0.95, alpha=1, beta=1)
-    shortest_path = ant_colony.run()
-    print(f"Shortest path: {shortest_path}")
+    def select_next_node(self):
+        # Probabilistically choose the next node based on pheromone levels
+        pheromone_sum = sum(self.pheromones.values())
+        choices = []
+        
+        for node in self.nodes:
+            probability = self.pheromones[node] / pheromone_sum
+            choices.append((node, probability))
+        
+        # Weighted random choice
+        return random.choices([node for node, _ in choices], weights=[prob for _, prob in choices])[0]
+
+
+# Parameters for the ACO algorithm
+nodes = [1, 2, 3, 5, 8]  # Possible steps (nodes) for ants
+target_value = 15        # Target integer value to reach
+n_ants = 10               # Number of ants per iteration
+n_iterations = 20         # Number of iterations
+evaporation_rate = 0.1    # Pheromone evaporation rate
+pheromone_intensity = 100 # Intensity of pheromone deposit
+
+# Run the ACO algorithm
+aco = AntColonyOptimizer(nodes, target_value, n_ants, n_iterations, evaporation_rate, pheromone_intensity)
+best_path, best_total = aco.run()
+print(f"Best path found: {best_path} with total {best_total}")

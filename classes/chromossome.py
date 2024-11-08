@@ -2,7 +2,7 @@ import random
 
 class ChromosomeClass:
     def __init__(self, value, fitness = -1):
-        self.value = value # group of genes
+        self.value: list[int] = value # group of genes
         self.fitness: float = fitness # fitness value
     
     def reproduce(self, other, crossover_point: int):

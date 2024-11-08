@@ -7,7 +7,7 @@ def print_population(population: list[ChromosomeClass]):
 
 def print_chromossome(chromossome: ChromosomeClass, show_fitness: bool = False):
     for c in chromossome.value:
-        print(chr(c), end=" ")
+        print(c, end=" ")
     if(show_fitness): print(" = ", chromossome.fitness)
     else: print()
 

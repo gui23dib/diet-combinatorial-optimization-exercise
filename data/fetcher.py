@@ -15,7 +15,7 @@ def load_nutrition_data(file_path) -> list[Nutrition]:
                 propid=row['id'],
                 name=row['name'],
                 calories=row['calories'],
-                fat=row.get('fat', row['total_fat']), 
+                fat=row['fat'] or row.get('fat', row['total_fat']),
                 protein=row['protein'],
                 carbohydrate=row['carbohydrate']
             )

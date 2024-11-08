@@ -14,13 +14,16 @@ def fitness(population: list[ChromosomeClass], obj: (int, int), df: list[Nutriti
     for chromossome in population:
         points = 0
         diff_cal = 0
-        diff_macros = 0
+        #diff_prot = 0
+        #diff_macros = 0
         for i, gene in enumerate(chromossome.value):
             diff_cal += df[gene].calories
-            diff_macros += df[gene].macro_fit
+            #diff_prot += df[gene].prot
+            #diff_macros += df[gene].macro_fit
         
-        points = abs(obj[0] - diff_cal) * 0.5
-        points = abs(obj[1] - diff_macros) * 0.5
+        points = abs(obj[0] - diff_cal) # * 0.8
+        #points = abs(obj[1] - diff_prot) * 0.2
+        #points = abs(obj[1] - diff_macros) * 0.5
 
         chromossome.fitness = 1 / (1 + points) 
     return population
@@ -42,9 +45,9 @@ def gen_alg(objective: (int, int), dataframe: list[Nutrition]):
     if True:
         try:
             max_iterations: int = 10000
-            solution_size = 20
-            population_length = 1000
-            mutation_rate = 0.3
+            solution_size = 10
+            population_length = 100
+            mutation_rate = 0.05
 
 
             gen_count: int = 0
@@ -72,7 +75,7 @@ def gen_alg(objective: (int, int), dataframe: list[Nutrition]):
 
         print("All generations have been processed.")
         print(f"Total generations: {gen_count}")
-        print(f"Best chromosome: {[e for e in population.population[0].value]} {population.best_fitness}", end="")
+        print(f"Best chromosome: {[e for e in population.population[0].value]} {population.best_fitness}", end="\n")
         suma = 0
         sumb = 0
         for item in population.population[0].value:

@@ -11,8 +11,7 @@ class AntPopulation:
     def populate(self, population_length: int, id_range: int) -> list[AntClass]:
         if self.population is None or self.population == []:
             for _ in range(population_length):
-                temp: int = random.randint(1, id_range)
-                self.population.append(AntClass(temp))
+                self.population.append(AntClass(starting_point=random.randint(0, id_range)))
     
         return self.population
 

@@ -1,4 +1,4 @@
-from classes.ant import AntClass
+from ant_colony.ant import AntClass
 import random
 
 class AntPopulation:

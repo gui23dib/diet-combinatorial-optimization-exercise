@@ -139,14 +139,14 @@ if __name__ == "__main__":
 
     # Plot for fat convergence
     plt.subplot(1, 3, 2)
-    plt.plot(best_cal_values, marker='o', color='red')
+    plt.plot(best_cal_values, marker='o', color='green')
     plt.title("Convergence of ACO calories")
     plt.xlabel("Iteration")
     plt.ylabel("Best Calories Sum")
 
     # Plot for pheromone levels
     plt.subplot(1, 3, 3)
-    plt.bar(range(len(df.foodlist)), aco.pheromones, color='green', alpha=0.7)
+    plt.bar(range(len(df.foodlist)), aco.pheromones, color='red', alpha=0.7)
     plt.title("Pheromone Levels for Nodes")
     plt.xlabel("FoodNode")
     plt.ylabel("Pheromone Strength")

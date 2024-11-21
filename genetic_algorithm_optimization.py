@@ -135,22 +135,8 @@ if __name__ == '__main__':
 
     plt.figure(figsize=(18, 6))
 
-    # Plot for fit convergence
-    plt.subplot(1, 3, 1)
-    plt.plot(best_fit_values, marker='o', color='red')
-    plt.title("Convergence of GA Fit")
-    plt.xlabel("Iteration")
-    plt.ylabel("Best Fit Sum") 
-
-    # Plot for fit convergence
-    plt.subplot(1, 3, 2)
-    plt.plot(best_calories_gen, marker='o', color='green')
-    plt.title("Convergence of GA Calories")
-    plt.xlabel("Iteration")
-    plt.ylabel("Best Calories Sum") 
-
     # Plot for macros convergence
-    plt.subplot(1, 3, 3)
+    plt.subplot(1, 3, 1)
     # Extracting each macro component
     proteins = [item[0] for item in best_macros_gen]
     carbs = [item[1] for item in best_macros_gen]
@@ -163,6 +149,21 @@ if __name__ == '__main__':
     plt.xlabel("Iteration")
     plt.ylabel("Best Macros Sum")
     plt.legend()
+
+    # Plot for fit convergence
+    plt.subplot(1, 3, 2)
+    plt.plot(best_calories_gen, marker='o', color='green')
+    plt.title("Convergence of GA Calories")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Calories Sum") 
+    
+    # Plot for fit convergence
+    plt.subplot(1, 3, 3)
+    plt.plot(best_fit_values, marker='o', color='red')
+    plt.title("Convergence of GA Fit")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Fit Sum") 
+
 
     plt.tight_layout()
     plt.show()

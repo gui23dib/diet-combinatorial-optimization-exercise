@@ -18,10 +18,8 @@ class AntColonyOptimization:
         
         self.best_values = []
         self.best_cal_values = []
-        self.best_protein_values = []
-        self.best_fat_values = []
-        self.best_carbs_values = []
-
+        self.best_macro_values = []
+        
     def _construct_solution(self):
         visited = set()
         visit_counts = {}
@@ -88,10 +86,12 @@ class AntColonyOptimization:
             self._update_pheromones(solutions, values)
             self.best_values.append(self.best_value)
             self.best_cal_values.append(sum(self.problem.foodlist[city].calories for city in self.best_solution))
-            self.best_protein_values.append(sum(self.problem.foodlist[city].protein for city in self.best_solution))
-            self.best_fat_values.append(sum(self.problem.foodlist[city].fat for city in self.best_solution))
-            self.best_carbs_values.append(sum(self.problem.foodlist[city].carbs for city in self.best_solution))
-        return self.best_solution, self.best_value, self.best_values, self.best_cal_values, self.best_protein_values, self.best_fat_values, self.best_carbs_values
+            self.best_macro_values.append([
+                sum(self.problem.foodlist[city].protein for city in self.best_solution),
+                sum(self.problem.foodlist[city].carbs for city in self.best_solution),
+                sum(self.problem.foodlist[city].fat for city in self.best_solution)
+            ])
+        return self.best_solution, self.best_value, self.best_values, self.best_cal_values, self.best_macro_values
         
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         beta=0.8,
         # pheromone_initial=1.0,
     )
-    best_solution, best_value, best_values, best_cal_values, best_protein_values, best_fat_values, best_carbs_values = aco.run()
+    best_solution, best_value, best_values, best_cal_values, best_macro_values = aco.run()
 
     # Results
     print("Best Solution:", end=' ')
@@ -122,30 +122,32 @@ if __name__ == "__main__":
     plt.figure(figsize=(18, 6))
 
     # Plot for protein convergence
-    plt.subplot(1, 4, 1)
-    plt.plot(best_protein_values, marker='o', color='green')
-    plt.title("Convergence of ACO Protein")
+    plt.subplot(1, 3, 1)
+    
+    proteins = [item[0] for item in best_macro_values]
+    carbs = [item[1] for item in best_macro_values]
+    fats = [item[2] for item in best_macro_values]
+
+    plt.plot(proteins, marker='o', color='blue', label='Proteins')
+    plt.plot(carbs, marker='o', color='skyblue', label='Carbs')
+    plt.plot(fats, marker='o', color='navy', label='Fats')
+    plt.title("Convergence of ACO Macros")
     plt.xlabel("Iteration")
-    plt.ylabel("Best Protein Sum")
+    plt.ylabel("Best Macros Sum")
+    plt.legend()
+
 
     # Plot for fat convergence
-    plt.subplot(1, 4, 2)
-    plt.plot(best_fat_values, marker='o', color='red')
-    plt.title("Convergence of ACO Fat")
+    plt.subplot(1, 3, 2)
+    plt.plot(best_cal_values, marker='o', color='red')
+    plt.title("Convergence of ACO calories")
     plt.xlabel("Iteration")
-    plt.ylabel("Best Fat Sum")
-
-    # Plot for carbs convergence
-    plt.subplot(1, 4, 3)
-    plt.plot(best_carbs_values, marker='o', color='orange')
-    plt.title("Convergence of ACO Carbs")
-    plt.xlabel("Iteration")
-    plt.ylabel("Best Carbs Sum")
+    plt.ylabel("Best Calories Sum")
 
     # Plot for pheromone levels
-    plt.subplot(1, 4, 4)
+    plt.subplot(1, 3, 3)
     plt.bar(range(len(df.foodlist)), aco.pheromones, color='green', alpha=0.7)
-    plt.title("Pheromone Levels for Cities")
+    plt.title("Pheromone Levels for Nodes")
     plt.xlabel("FoodNode")
     plt.ylabel("Pheromone Strength")
     plt.xticks(range(len(df.foodlist)), [f"{i.name}" for i in df.foodlist], rotation=90)

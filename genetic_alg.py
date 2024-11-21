@@ -7,9 +7,9 @@ import random
 
 class GeneticAlgorithmOptimization:
     def __init__(
-            self,
-            dataframe: list[FoodNode],
-            objective: tuple[int, int],
+            self, 
+            dataframe: list[FoodNode], 
+            objective: tuple[int, int], 
             mutation_rate: float = 0.05,
             max_iterations: int = 10000,
             solution_size: int = 10,
@@ -30,14 +30,16 @@ class GeneticAlgorithmOptimization:
         
     def fitness(self, obj: tuple[int, int]) -> list[ChromosomeClass]:
         for chromossome in self.population:
-            points = 0
-            diff_cal = 0
+            total_protein = 0
+            total_calories = 0
             for _, gene in enumerate(chromossome.value):
-                diff_cal += int(self.dataframe[gene].calories)
+                total_calories += int(self.dataframe[gene].calories)
+                total_protein += int(self.dataframe[gene].protein)
             
-            points = abs(obj[0] - diff_cal)
-
-            chromossome.fitness = 1 / (1 + points) 
+            if total_calories > obj[0]:  # obj[0] is the maximum allowed calories
+                chromossome.fitness = 0
+            else:
+                chromossome.fitness = total_protein  # Fitness is the total protein
         return self.population
 
     def mating_pool_roulette(self):
@@ -57,21 +59,18 @@ class GeneticAlgorithmOptimization:
         try:
             gen_count: int = 0
 
-            population: PopulationClass = PopulationClass()
-            population.populate(self.solution_size, self.population_length, len(self.dataframe) - 1)
+            while self.popclass.best_fitness != 1.0 and gen_count <= self.max_iterations:
+                self.population = self.fitness(self.objective)
+                self.popclass.sort_population() # sort population by fitness (already defines the best fitness)
 
-            while population.best_fitness != 1.0 and gen_count <= self.max_iterations:
-                population.population = self.fitness(self.objective)
-                population.sort_population() # sort population by fitness (already defines the best fitness)
-
-                print_stats(population, gen_count)
+                print_stats(self.population, gen_count)
 
                 new_population: list[ChromosomeClass] = self.new_generation()
-                while len(new_population) < len(population.population):
+                while len(new_population) < len(self.population):
                     for child in self.mating_pool_roulette(): # pick your mating pool method here
                         new_population.append(ChromosomeClass(child.mutate(self.mutation_rate, len(self.dataframe) - 1)))
 
-                population.population = new_population
+                self.population = new_population
                 gen_count += 1
         except KeyboardInterrupt:
             print("Process interrupted by user")
@@ -80,9 +79,9 @@ class GeneticAlgorithmOptimization:
 
         print("All generations have been processed.")
         print(f"Total generations: {gen_count}")
-        print(f"Best chromosome: {[e for e in population.population[0].value]} {population.best_fitness}", end="\n")
+        print(f"Best chromosome: {[e for e in self.population[0].value]} {self.best_fitness}", end="\n")
         suma = 0
-        for item in population.population[0].value:
+        for item in self.population[0].value:
             x = self.dataframe[item]
             print(x.name, x.calories, x.protein)
             suma += int(x.calories)

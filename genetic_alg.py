@@ -1,10 +1,10 @@
 from classes.population import PopulationClass
 from classes.chromossome import ChromosomeClass
-from utils import print_stats
+from Tools.utils import print_stats
 import random
 from data.fetcher import load_nutrition_data
 from classes.nutrition import Nutrition
-import utils
+import Tools.utils as utils
 import genetic_alg
 import os
 

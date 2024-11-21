@@ -65,4 +65,6 @@ class AntColonyOptimization:
             self._update_pheromones(solutions, values)
             self.best_values.append(self.best_value)
             self.best_cal_values.append(sum(self.problem.foodlist[city].calories for city in self.best_solution))
+            
+        print(self.best_solution)
         return self.best_solution, self.best_value, self.best_values, self.best_cal_values

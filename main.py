@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from ant_colony_optimization import AntColonyOptimization
+
 from classes.nutrition_dataframe import NutritionDataFrame
-from genetic_alg import GeneticAlgorithmOptimization
+
+from ant_colony_optimization import AntColonyOptimization
+from genetic_algorithm_optimization import GeneticAlgorithmOptimization
 
 global calories, protein, carbs, fats
 
@@ -50,13 +52,12 @@ def runGA():
         max_calories=calories
     )
     ga = GeneticAlgorithmOptimization(
+        problem=df,
         solution_size=10, 
         population_length=100, 
-        dataframe=df.foodlist,
-        objective=(2000, 200)
     )
-    best_solution, best_value, best_values, best_cal_values = ga.run()
-    plot_results(best_values, best_cal_values, "Genetic Algorithm Results", best_solution, best_value, df)
+    best_solution, best_values, best_cal_values, best_prot_values = ga.run()
+    plot_results(best_solution, best_cal_values, "Genetic Algorithm Results", best_solution, best_values, df)
 
 def plot_results(best_values, best_cal_values, title, best_solution=None, best_value=None, df=None):
     window.geometry("800x1000")

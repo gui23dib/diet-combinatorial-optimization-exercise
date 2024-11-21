@@ -32,9 +32,9 @@ class AntColonyOptimization:
         total_calories = 0
         
         while len(solution) < self.solution_max_size:
-            target_protein: float = 200
-            target_fat: float = 100
-            target_carbs: float = 300
+            target_protein: float = self.problem.target_protein
+            target_fat: float = self.problem.target_fat
+            target_carbs: float = self.problem.target_carbs
             
             probabilities = np.array([
                 (self.pheromones[i] ** self.alpha) * 

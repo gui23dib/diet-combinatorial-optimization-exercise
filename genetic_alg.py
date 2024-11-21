@@ -3,6 +3,7 @@ from classes.nutrition_dataframe import NutritionDataFrame
 from data.tools.utils import print_stats
 from genetic_alg.population import PopulationClass
 from genetic_alg.chromossome import ChromosomeClass
+from matplotlib import pyplot as plt
 import random
 
 class GeneticAlgorithmOptimization:
@@ -11,7 +12,7 @@ class GeneticAlgorithmOptimization:
             dataframe: list[FoodNode],
             objective: tuple[int, int],
             mutation_rate: float = 0.05,
-            max_iterations: int = 10000,
+            max_iterations: int = 500,
             solution_size: int = 10,
             population_length: int = 100,
         ):
@@ -103,7 +104,7 @@ class GeneticAlgorithmOptimization:
             suma += int(x.calories)
         print(f"CALORIAS FINAIS: {suma}\n")
         
-        return suma
+        return population.population[0].value, self.best_fit_values, self.best_calories_gen, self.best_proteins_gen 
 
 if __name__ == '__main__':
     data = NutritionDataFrame()
@@ -115,4 +116,31 @@ if __name__ == '__main__':
         objective=(2000, 200)
     )
     
-    res = ga.run()
+    res, best_fit_values, best_calories_gen, best_proteins_gen = ga.run()
+
+    plt.figure(figsize=(18, 6))
+
+    # Plot for fit convergence
+    plt.subplot(1, 4, 1)
+    plt.plot(best_fit_values, marker='o', color='green')
+    plt.title("Convergence of GA Fit")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Fit Sum") 
+
+    # Plot for fit convergence
+    plt.subplot(1, 4, 2)
+    plt.plot(best_calories_gen, marker='o', color='green')
+    plt.title("Convergence of GA Calories")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Calories Sum") 
+
+    # Plot for fit convergence
+    plt.subplot(1, 4, 2)
+    plt.plot(best_proteins_gen, marker='o', color='green')
+    plt.title("Convergence of GA Proteins")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Proteins Sum")
+
+    plt.tight_layout()
+    plt.show()
+

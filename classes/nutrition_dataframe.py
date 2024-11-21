@@ -28,10 +28,10 @@ class NutritionDataFrame:
             for row in reader:
                 entry = FoodNode(
                     name=row['Nome'],
-                    protein=row['Proteína'],
-                    calories=row['Calorias'],
-                    fat=row['Gordura'],
-                    carbs=row['Carboidratos']
+                    protein=float(row['Proteína']),
+                    calories=float(row['Calorias']),
+                    fat=float(row['Gordura']),
+                    carbs=float(row['Carboidratos'])
                 )
                 objects.append(entry)
 

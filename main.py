@@ -119,7 +119,7 @@ def confirm_inputs():
         canvas.draw()
         canvas.get_tk_widget().grid(row=6, columnspan=2)
         
-        window.geometry("800x600")
+        window.geometry("800x800")
         
         confirm = messagebox.askyesno("Confirm Inputs", f"Calorie: {calories}\nProtein: {protein}\nCarbs: {carbs}\nFats: {fats}\n\nDo you want to proceed?")
         if confirm:

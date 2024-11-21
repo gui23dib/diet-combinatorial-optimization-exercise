@@ -2,19 +2,25 @@ import numpy as np
 
 class AntColonyOptimization:
     def __init__(self, problem, num_ants, num_iterations, alpha, beta, evaporation_rate, solution_max_size = 15, max_portions = 5):
-        self.problem = problem
-        self.num_ants = num_ants
-        self.num_iterations = num_iterations
-        self.alpha = alpha
-        self.beta = beta
-        self.evaporation_rate = evaporation_rate
-        self.solution_max_size = solution_max_size
-        self.max_portions = max_portions
+        self.problem: NutritionDataFrame = problem
+        self.num_ants: int = num_ants
+        self.num_iterations: int = num_iterations
+        self.alpha: float = alpha
+        self.beta: float = beta
+        self.evaporation_rate: float = evaporation_rate
+        self.solution_max_size: float = solution_max_size
+        self.max_portions: int = max_portions
         self.pheromones = np.ones(len(problem.foodlist))
         self.best_solution = None
-        self.best_value = float('-inf')
+        self.best_value: float = float('-inf')
         self.best_values = []
         self.best_cal_values = []
+        
+        self.best_values = []
+        self.best_cal_values = []
+        self.best_protein_values = []
+        self.best_fat_values = []
+        self.best_carbs_values = []
 
     def _construct_solution(self):
         visited = set()
@@ -26,9 +32,9 @@ class AntColonyOptimization:
         total_calories = 0
         
         while len(solution) < self.solution_max_size:
-            target_protein = total_calories * 0.3
-            target_fat = total_calories * 0.3
-            target_carbs = total_calories * 0.3
+            target_protein: float = 200
+            target_fat: float = 100
+            target_carbs: float = 300
             
             probabilities = np.array([
                 (self.pheromones[i] ** self.alpha) * 
@@ -67,6 +73,7 @@ class AntColonyOptimization:
                 self.pheromones[city] += value
 
     def run(self):
+
         for _ in range(self.num_iterations):
             solutions = []
             values = []
@@ -81,10 +88,11 @@ class AntColonyOptimization:
             self._update_pheromones(solutions, values)
             self.best_values.append(self.best_value)
             self.best_cal_values.append(sum(self.problem.foodlist[city].calories for city in self.best_solution))
-            
-        print(self.best_solution)
-        return self.best_solution, self.best_value, self.best_values, self.best_cal_values
-    
+            self.best_protein_values.append(sum(self.problem.foodlist[city].protein for city in self.best_solution))
+            self.best_fat_values.append(sum(self.problem.foodlist[city].fat for city in self.best_solution))
+            self.best_carbs_values.append(sum(self.problem.foodlist[city].carbs for city in self.best_solution))
+        return self.best_solution, self.best_value, self.best_values, self.best_cal_values, self.best_protein_values, self.best_fat_values, self.best_carbs_values
+        
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
     from classes.nutrition_dataframe import NutritionDataFrame
@@ -99,7 +107,7 @@ if __name__ == "__main__":
         beta=0.8,
         # pheromone_initial=1.0,
     )
-    best_solution, best_value, best_values, best_cal_values = aco.run()
+    best_solution, best_value, best_values, best_cal_values, best_protein_values, best_fat_values, best_carbs_values = aco.run()
 
     # Results
     print("Best Solution:", end=' ')
@@ -111,21 +119,31 @@ if __name__ == "__main__":
     print("Total Protein Consumption:", best_value)
     print("Total Calories Cost:", sum(df.foodlist[food].calories for food in best_solution))
 
-    plt.figure(figsize=(18, 5))
+    plt.figure(figsize=(18, 6))
 
-    plt.subplot(1, 3, 1)
-    plt.plot(best_values, marker='o', color='green')
-    plt.title("Convergence of ACO protein")
+    # Plot for protein convergence
+    plt.subplot(1, 4, 1)
+    plt.plot(best_protein_values, marker='o', color='green')
+    plt.title("Convergence of ACO Protein")
     plt.xlabel("Iteration")
-    plt.ylabel("Best protein sum")
-    
-    plt.subplot(1, 3, 2)
-    plt.plot(best_cal_values, marker='o', color='blue')
-    plt.title("Convergence of ACO calories")
-    plt.xlabel("Iteration")
-    plt.ylabel("Best calories sum")
+    plt.ylabel("Best Protein Sum")
 
-    plt.subplot(1, 3, 3)
+    # Plot for fat convergence
+    plt.subplot(1, 4, 2)
+    plt.plot(best_fat_values, marker='o', color='red')
+    plt.title("Convergence of ACO Fat")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Fat Sum")
+
+    # Plot for carbs convergence
+    plt.subplot(1, 4, 3)
+    plt.plot(best_carbs_values, marker='o', color='orange')
+    plt.title("Convergence of ACO Carbs")
+    plt.xlabel("Iteration")
+    plt.ylabel("Best Carbs Sum")
+
+    # Plot for pheromone levels
+    plt.subplot(1, 4, 4)
     plt.bar(range(len(df.foodlist)), aco.pheromones, color='green', alpha=0.7)
     plt.title("Pheromone Levels for Cities")
     plt.xlabel("FoodNode")

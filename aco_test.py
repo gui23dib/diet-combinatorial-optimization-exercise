@@ -1,17 +1,17 @@
 import matplotlib.pyplot as plt
 from ant_colony.nutrition_dataframe import NutritionDataFrame
-from ant_colony.ant_colony_optimization import ACO
+from ant_colony.ant_colony_optimization import AntColonyOptimization
 
 if __name__ == "__main__":
     df = NutritionDataFrame()
-    aco = ACO(
+    aco = AntColonyOptimization(
         problem=df,
-        n_ants=100,
-        n_iterations=500,
+        num_ants=100,
+        num_iterations=500,
         evaporation_rate=0.6,
-        pheromone_initial=1.0,
         alpha=0.4,
         beta=0.8,
+        # pheromone_initial=1.0,
     )
     best_solution, best_value, best_values, best_cal_values = aco.run()
 
@@ -22,8 +22,8 @@ if __name__ == "__main__":
 
     for food in (df.foodlist[i] for i in best_solution):
         print(f"\t{food.name}: protein={food.protein}, calories={food.calories}")
-    print("Stars Collected:", best_value)
-    print("Total Cost:", sum(df.foodlist[food].calories for food in best_solution))
+    print("Total Protein Consumption:", best_value)
+    print("Total Calories Cost:", sum(df.foodlist[food].calories for food in best_solution))
 
     plt.figure(figsize=(18, 5))
 

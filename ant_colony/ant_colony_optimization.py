@@ -16,7 +16,6 @@ class ACO:
         self.best_cal_values: list[int] = []
 
     def _construct_solution(self):
-        """Construct a solution probabilistically under constraints."""
         visited = set()
         solution = []
         total_cost = 0
@@ -44,14 +43,12 @@ class ACO:
         return solution
 
     def _update_pheromones(self, solutions, values):
-        """Update pheromones based on solutions and their values."""
         self.pheromones *= (1 - self.evaporation_rate)  # Evaporation
         for solution, value in zip(solutions, values):
             for city in solution:
                 self.pheromones[city] += value
 
-    def optimize(self):
-        """Run the ACO algorithm."""
+    def run(self):
         for _ in range(self.n_iterations):
             solutions = [self._construct_solution() for _ in range(self.n_ants)]
             values = [self.problem.evaluate(sol) for sol in solutions]

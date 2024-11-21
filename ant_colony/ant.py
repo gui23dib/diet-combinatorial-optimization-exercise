@@ -1,7 +1,6 @@
 import random
 
 class AntClass:
-    #MétodoConstrutor
     def __init__(self, starting_point: int, tour_path: list[int] = [], visited: list[int] = []):
         self.tour_path: list[int] = tour_path or [starting_point]#caminho do tour
         self.visited: list[int] = visited or [starting_point]

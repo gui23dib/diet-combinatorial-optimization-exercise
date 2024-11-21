@@ -1,6 +1,6 @@
 from data.fetcher import load_nutrition_data
 from classes.nutrition import Nutrition
-import utils
+import Tools.utils as utils
 import genetic_alg
 import os
 

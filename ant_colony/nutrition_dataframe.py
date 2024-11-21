@@ -3,7 +3,6 @@ from ant_colony.food import FoodNode
 
 class NutritionDataFrame:
     def __init__(self):
-        """Initialize the problem with a list of city objects."""
         self.foodlist: list[FoodNode] = [
             FoodNode(name="Feijão com Arroz", protein=20, calories=451),         # Feijão com arroz
             FoodNode(name="Pão Francês com Manteiga", protein=5, calories=253),    # Pão francês com manteiga
@@ -31,9 +30,9 @@ class NutritionDataFrame:
         self.max_calories: int = 2000
 
     def evaluate(self, solution):
-        """Evaluate a solution based on protein collected and calories constraints."""
-        total_macro = sum(self.foodlist[city].protein for city in solution)
-        total_calorie_cost = sum(self.foodlist[city].calories for city in solution)
+        total_macro = sum(self.foodlist[node].protein for node in solution)
+        total_calorie_cost = sum(self.foodlist[node].calories for node in solution)
+        
         if total_calorie_cost > self.max_calories:
             return 0  # Invalid solution
         return total_macro

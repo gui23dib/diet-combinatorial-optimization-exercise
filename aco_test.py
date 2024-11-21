@@ -5,15 +5,15 @@ from ant_colony.ant_colony_optimization import ACO
 if __name__ == "__main__":
     df = NutritionDataFrame()
     aco = ACO(
-        problem=df, 
-        n_ants=100, 
-        n_iterations=500, 
-        evaporation_rate=0.6, 
+        problem=df,
+        n_ants=100,
+        n_iterations=500,
+        evaporation_rate=0.6,
         pheromone_initial=1.0,
         alpha=0.4,
         beta=0.8,
     )
-    best_solution, best_value, best_values, best_cal_values = aco.optimize()
+    best_solution, best_value, best_values, best_cal_values = aco.run()
 
     # Results
     print("Best Solution:", end=' ')

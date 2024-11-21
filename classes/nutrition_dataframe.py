@@ -3,12 +3,18 @@ import csv
 from classes.food import FoodNode
 
 class NutritionDataFrame:
-    def __init__(self, foodlist = None, target_macro = 100, max_calories = 2000):
+    def __init__(self, foodlist = None, max_calories = 2000, target_protein = 200, target_fat = 50, target_carbs = 100):
         print("Initializing NutritionDataFrame")
-        print("target_macro:", target_macro, type(target_macro))
         print("max_calories:", max_calories, type(max_calories))
         self.foodlist: list[FoodNode] = foodlist or self.get_csv('data/foods.csv')
-        self.target_macro: int = target_macro
+        
+        self.target_protein: int = target_protein
+        self.target_fat: int = target_fat
+        self.target_carbs: int = target_carbs
+        print("target_protein:", target_protein)
+        print("target_fat:", target_fat)
+        print("target_carbs:", target_carbs)
+        
         self.max_calories: int = max_calories
 
     def evaluate(self, solution):

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from ant_colony.nutrition_dataframe import NutritionDataFrame
+
 from ant_colony.ant_colony_optimization import AntColonyOptimization
+from ant_colony.nutrition_dataframe import NutritionDataFrame
 
 if __name__ == "__main__":
     df = NutritionDataFrame()

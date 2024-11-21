@@ -1,12 +1,13 @@
-from ant_colony.food import FoodNode
+import csv
 
+from classes.food import FoodNode
 
 class NutritionDataFrame:
-    def __init__(self, foodlist = [], target_macro = 100, max_calories = 2000):
+    def __init__(self, foodlist = None, target_macro = 100, max_calories = 2000):
         print("Initializing NutritionDataFrame")
         print("target_macro:", target_macro, type(target_macro))
         print("max_calories:", max_calories, type(max_calories))
-        self.foodlist: list[FoodNode] = foodlist or get_csv('data/foods.csv')
+        self.foodlist: list[FoodNode] = foodlist or self.get_csv('data/foods.csv')
         self.target_macro: int = target_macro
         self.max_calories: int = max_calories
 
@@ -18,7 +19,7 @@ class NutritionDataFrame:
             return 0 
         return total_macro
     
-    def get_csv(file_path) -> list[FoodNode]:
+    def get_csv(self, file_path) -> list[FoodNode]:
         objects = []
 
         with open(file_path, mode='r', encoding='utf-8') as file:
@@ -30,14 +31,13 @@ class NutritionDataFrame:
                     protein=row['Proteína'],
                     calories=row['Calorias'],
                     fat=row['Gordura'],
-                    carbohydrate=row['Carboidratos']
+                    carbs=row['Carboidratos']
                 )
                 objects.append(entry)
 
         return objects
 
-
 if __name__ == '__main__':
-    data = load_nutrition_data('data/nutrition_without_0_calories.csv')
-    for d in data:
-        print(d)
+    data = NutritionDataFrame()
+    for i in data.foodlist:
+        print(i.name, i.protein, i.calories, i.fat, i.carbs)

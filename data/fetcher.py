@@ -1,8 +1,9 @@
 import sys
 import os
+
+from genetic_alg.nutrition import Nutrition
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import csv
-from classes.nutrition import Nutrition
 
 def load_nutrition_data(file_path) -> list[Nutrition]:
     nutrition_data = []

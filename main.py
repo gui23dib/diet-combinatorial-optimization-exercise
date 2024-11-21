@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from ant_colony.nutrition_dataframe import NutritionDataFrame
-from ant_colony.ant_colony_optimization import AntColonyOptimization
+from ant_colony_optimization import AntColonyOptimization
+from classes.nutrition_dataframe import NutritionDataFrame
 
 global calories, protein, carbs, fats
 
@@ -98,9 +98,9 @@ def show_main_page():
     tk.Button(window, text="Confirm", command=confirm_inputs, font=("Helvetica", 14)).grid(row=4, column=0, pady=10)
     tk.Button(window, text="Reset", command=reset_inputs, font=("Helvetica", 14)).grid(row=4, column=1, pady=10)
 
-def show_pie_chart(protein, carbs, fats):
+def show_pie_chart(proteintemp, carbstemp, fatstemp):
     labels = 'Protein', 'Carbs', 'Fats'
-    sizes = [protein, carbs, fats]
+    sizes = [proteintemp, carbstemp, fatstemp]
     fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
     ax.axis('equal') 

@@ -1,5 +1,6 @@
-from classes.population import PopulationClass
-from classes.chromossome import ChromosomeClass
+from genetic_alg.chromossome import ChromosomeClass
+from genetic_alg.population import PopulationClass
+
 
 def print_population(population: list[ChromosomeClass]):
     for chromossome in population:

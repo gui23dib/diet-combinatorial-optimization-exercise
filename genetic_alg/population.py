@@ -1,5 +1,6 @@
 import random
-from classes.chromossome import ChromosomeClass
+
+from genetic_alg.chromossome import ChromosomeClass
 
 class PopulationClass:
     population: list[ChromosomeClass] = []

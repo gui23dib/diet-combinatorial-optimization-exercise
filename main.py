@@ -1,3 +1,4 @@
+from math import e
 import tkinter as tk
 from tkinter import messagebox
 import matplotlib.pyplot as plt
@@ -39,9 +40,9 @@ def runACO():
         alpha=0.4,
         beta=0.8,
     )
-    best_solution, best_value, best_values, best_cal_values, best_protein_values, best_fat_values, best_carbs_values = aco.run()
+    best_solution, best_values, best_cal_values, best_macro_values = aco.run()
     
-    plot_results(best_values, best_cal_values, "ACO Algorithm Results", best_solution, best_value, df)
+    plot_results(best_values, best_cal_values, best_macro_values, "ACO Algorithm Results", best_solution, df)
 
 def runGA():
     messagebox.showinfo("Genetic Algorithm", "Running Genetic Algorithm...")
@@ -54,28 +55,40 @@ def runGA():
     ga = GeneticAlgorithmOptimization(
         problem=df,
         population_length=100, 
+        max_iterations=2500,
+        solution_max_size=25,
+        solution_min_size=5,
+        elite_size=3,
+        convergence_rate=0.7,
+        mutation_rate=0.05,
     )
-    best_solution, best_values, best_cal_values, best_prot_values = ga.run()
-    plot_results(best_solution, best_cal_values, "Genetic Algorithm Results", best_solution, best_values, df)
+    best_solution, best_fit_values, best_calories_gen, best_macros_gen = ga.run()
+    plot_results(best_fit_values, best_calories_gen, best_macros_gen, "Genetic Algorithm Results", best_solution, df)
 
-def plot_results(best_values, best_cal_values, title, best_solution=None, best_value=None, df=None):
-    window.geometry("800x1000")
-    fig, axs = plt.subplots(2)
-    fig.suptitle(title)
-    
+def plot_results(best_values, best_cal_values, best_macro_values, title, best_solution=None, df=None):
+    window.geometry("800x1200")
+    fig, axs = plt.subplots(3)
+    fig.suptitle(title, fontsize=16)
+
     axs[0].plot(best_values, color='green')
     axs[0].set_title('Best Values')
-    
+
     axs[1].plot(best_cal_values, color='red')
     axs[1].set_title('Best Calorie Values')
-    
-    fig.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
 
+    axs[2].plot([item[0] for item in best_macro_values], color='blue', label='Proteins')
+    axs[2].plot([item[1] for item in best_macro_values], color='skyblue', label='Carbs')
+    axs[2].plot([item[2] for item in best_macro_values], color='navy', label='Fats')
+    axs[2].set_title('Best Macro Values', fontsize=14)
+    axs[2].legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    
+    fig.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.5, wspace=0.4)
+        
     canvas = FigureCanvasTkAgg(fig, master=window)
     canvas.draw()
     canvas.get_tk_widget().grid(row=7, columnspan=2)
     
-    if best_solution is not None and best_value is not None and df is not None:
+    if best_solution is not None and df is not None:
         listbox = tk.Listbox(window, font=("Helvetica", 12))
         listbox.grid(row=8, column=0, columnspan=2, rowspan=4, sticky="nsew", pady=10)
 

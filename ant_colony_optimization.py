@@ -39,7 +39,7 @@ class AntColonyOptimization:
                 (1 / (abs(self.problem.foodlist[i].protein - target_protein) + 
                     abs(self.problem.foodlist[i].fat - target_fat) + 
                     abs(self.problem.foodlist[i].carbs - target_carbs) + 1)) ** self.beta 
-                if i not in visited or visit_counts.get(i, 0) < 5 else 0
+                if i not in visited or visit_counts.get(i, 0) < self.max_portions else 0
                 for i in range(len(self.problem.foodlist))
             ])
             probabilities /= probabilities.sum() if probabilities.sum() > 0 else 1
@@ -53,7 +53,7 @@ class AntColonyOptimization:
             if next_calories <= self.problem.max_calories:
                 solution.append(next_city)
                 visit_counts[next_city] = visit_counts.get(next_city, 0) + 1
-                if visit_counts[next_city] >= 5:
+                if visit_counts[next_city] >= self.max_portions:
                     visited.add(next_city)
                 total_protein = next_protein
                 total_fat = next_fat
@@ -72,7 +72,7 @@ class AntColonyOptimization:
 
     def run(self):
 
-        for _ in range(self.num_iterations):
+        for i in range(self.num_iterations):
             solutions = []
             values = []
             for _ in range(self.num_ants):
@@ -85,13 +85,14 @@ class AntColonyOptimization:
                     self.best_solution = solution
             self._update_pheromones(solutions, values)
             self.best_values.append(self.best_value)
+            print(f"Generation {i} / Best Value: {self.best_value}")
             self.best_cal_values.append(sum(self.problem.foodlist[city].calories for city in self.best_solution))
             self.best_macro_values.append([
                 sum(self.problem.foodlist[city].protein for city in self.best_solution),
                 sum(self.problem.foodlist[city].carbs for city in self.best_solution),
                 sum(self.problem.foodlist[city].fat for city in self.best_solution)
             ])
-        return self.best_solution, self.best_value, self.best_values, self.best_cal_values, self.best_macro_values
+        return self.best_solution, self.best_values, self.best_cal_values, self.best_macro_values
         
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
@@ -107,7 +108,7 @@ if __name__ == "__main__":
         beta=0.8,
         # pheromone_initial=1.0,
     )
-    best_solution, best_value, best_values, best_cal_values, best_macro_values = aco.run()
+    best_solution, best_values, best_cal_values, best_macro_values = aco.run()
 
     # Results
     print("Best Solution:", end=' ')
@@ -116,7 +117,6 @@ if __name__ == "__main__":
 
     for food in (df.foodlist[i] for i in best_solution):
         print(f"\t{food.name}: protein={food.protein}, calories={food.calories}")
-    print("Total Protein Consumption:", best_value)
     print("Total Calories Cost:", sum(df.foodlist[food].calories for food in best_solution))
 
     plt.figure(figsize=(18, 6))

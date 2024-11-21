@@ -1,4 +1,3 @@
-from classes.food import FoodNode
 from classes.nutrition_dataframe import NutritionDataFrame
 from data.tools.utils import print_stats
 from genetic_alg.population import PopulationClass
@@ -15,7 +14,14 @@ class GeneticAlgorithmOptimization:
             population_length: int = 100,
             solution_max_size: int = 25,
             solution_min_size: int = 5,
+            elite_size: int = 2,
+            convergence_rate: float = 0.5,
+            max_portions = 3,
         ):
+        self.convergence_rate = convergence_rate
+        self.elite_size = elite_size
+        self.max_portions = max_portions
+        
         self.problem = problem
         self.popclass: PopulationClass = PopulationClass()
         self.popclass.populate(population_length, len(problem.foodlist) - 1, solution_max_size, solution_min_size)
@@ -42,7 +48,7 @@ class GeneticAlgorithmOptimization:
                     gene_count[gene] = 0
                 gene_count[gene] += 1
                 
-                if gene_count[gene] > 3:
+                if gene_count[gene] > self.max_portions:
                     chromossome.fitness = 0
                     break
                 total_calories += int(self.problem.foodlist[gene].calories)
@@ -63,17 +69,20 @@ class GeneticAlgorithmOptimization:
     #Roleta Viciada
     def mating_pool_roulette(self):
         total_net_fitness = sum([chromosome.fitness for chromosome in self.popclass.population])
+        if(total_net_fitness == 0): return random.choices(self.popclass.population, k=2)
         result = random.choices(self.popclass.population, weights=[chromosome.fitness / total_net_fitness for chromosome in self.popclass.population], k=2)
 
         pointer: int = random.randint(1, len(result[0].value) - 1)
-        result[0] = result[0].reproduce(result[1], pointer)
-        result[1] = result[1].reproduce(result[0], pointer)
+        
+        if random.random() < self.convergence_rate:
+            result[0] = result[0].reproduce(result[1], pointer)
+            result[1] = result[1].reproduce(result[0], pointer)
 
         return result
 
     #Cria uma nova geração ordenada
-    def new_generation(self, n_survivors: int = 2) -> list[ChromosomeClass]:
-        return sorted(self.popclass.population, key=lambda x: x.fitness, reverse=True)[:n_survivors]
+    def new_generation(self) -> list[ChromosomeClass]:
+        return sorted(self.popclass.population, key=lambda x: x.fitness, reverse=True)[:self.elite_size]
 
     def run(self) -> int:
         try:

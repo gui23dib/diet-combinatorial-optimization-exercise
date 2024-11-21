@@ -529,8 +529,10 @@ import random
 import numpy as np
 import pandas as pd
 
+lista_melhores = []
+
 # Carregar os dados dos alimentos
-alimentos_df = pd.read_csv('/Users/kadishsilva/Library/Mobile Documents/com~apple~CloudDocs/MyProfessionalCarrier/MyProjects/GitHub/diet-combinatorial-optimization-exercise/data/alimentos_nutricionais_10.csv', delimiter=';')
+alimentos_df = pd.read_csv('C:/Users/victo/Desktop/Algoritmo Genético/diet-combinatorial-optimization-exercise/data/alimentos_nutricionais_10.csv', delimiter=';')
 print("Dados dos alimentos carregados:")
 print(alimentos_df)
 

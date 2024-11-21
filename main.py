@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from ant_colony_optimization import AntColonyOptimization
 from classes.nutrition_dataframe import NutritionDataFrame
+from genetic_alg import GeneticAlgorithmOptimization
 
 global calories, protein, carbs, fats
 
@@ -22,7 +23,12 @@ window.title("Nutrition Goals")
 
 def runACO():
     messagebox.showinfo("ACO Algorithm", "Running ACO Algorithm...")
-    df = NutritionDataFrame(target_macro=protein, max_calories=calories)
+    df = NutritionDataFrame(
+        target_carbs=carbs,
+        target_fat=fats,
+        target_protein=protein, 
+        max_calories=calories
+    )
     aco = AntColonyOptimization(
         problem=df,
         num_ants=100,
@@ -31,15 +37,26 @@ def runACO():
         alpha=0.4,
         beta=0.8,
     )
-    best_solution, best_value, best_values, best_cal_values = aco.run()
+    best_solution, best_value, best_values, best_cal_values, best_protein_values, best_fat_values, best_carbs_values = aco.run()
+    
     plot_results(best_values, best_cal_values, "ACO Algorithm Results", best_solution, best_value, df)
 
 def runGA():
     messagebox.showinfo("Genetic Algorithm", "Running Genetic Algorithm...")
-    # Assuming similar structure for GA
-    best_values = [1, 2, 3, 4, 5]  # Replace with actual GA results
-    best_cal_values = [5, 4, 3, 2, 1]  # Replace with actual GA results
-    plot_results(best_values, best_cal_values, "Genetic Algorithm Results")
+    df = NutritionDataFrame(
+        target_carbs=carbs,
+        target_fat=fats,
+        target_protein=protein, 
+        max_calories=calories
+    )
+    ga = GeneticAlgorithmOptimization(
+        solution_size=10, 
+        population_length=100, 
+        dataframe=df.foodlist,
+        objective=(2000, 200)
+    )
+    best_solution, best_value, best_values, best_cal_values = ga.run()
+    plot_results(best_values, best_cal_values, "Genetic Algorithm Results", best_solution, best_value, df)
 
 def plot_results(best_values, best_cal_values, title, best_solution=None, best_value=None, df=None):
     window.geometry("800x1000")

@@ -53,7 +53,6 @@ def runGA():
     )
     ga = GeneticAlgorithmOptimization(
         problem=df,
-        solution_size=10, 
         population_length=100, 
     )
     best_solution, best_values, best_cal_values, best_prot_values = ga.run()
@@ -93,7 +92,8 @@ def plot_results(best_values, best_cal_values, title, best_solution=None, best_v
             count = data['count']
             listbox.insert(tk.END, f"{count}x - {food.name}:")
             listbox.insert(tk.END, f"        Calories = {food.calories}")
-            listbox.insert(tk.END, f"        Protein = {food.protein}")
+            listbox.insert(tk.END, f"        Protein = {food.protein} / Carb = {food.carbs} / Fat = {food.fat}")
+            
     
     tk.Button(window, text="Exit", font=("Helvetica", 14), command=window.destroy).grid(row=12, columnspan=2, pady=10)
 

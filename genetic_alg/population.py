@@ -9,10 +9,11 @@ class PopulationClass:
     def __init__(self):
         pass
 
-    def populate(self, objective_length: int, population_length: int, id_range: int) -> list[ChromosomeClass]:
+    def populate(self, population_length: int, id_range: int, solution_max_size, solution_min_size) -> list[ChromosomeClass]:
         if self.population is None or self.population == []:
             for _ in range(population_length):
-                temp: list[int] = [random.randint(1, id_range) for __ in range(objective_length)]
+                chromosome_size = random.randint(solution_min_size, solution_max_size)
+                temp: list[int] = [random.randint(1, id_range) for __ in range(chromosome_size)]
                 self.population.append(ChromosomeClass(temp))
                 
         return self.population

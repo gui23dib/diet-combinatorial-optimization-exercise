@@ -12,23 +12,21 @@ class GeneticAlgorithmOptimization:
             problem: NutritionDataFrame,
             mutation_rate: float = 0.05,
             max_iterations: int = 500,
-            solution_size: int = 10,
             population_length: int = 100,
+            solution_max_size: int = 25,
+            solution_min_size: int = 5,
         ):
         self.problem = problem
         self.popclass: PopulationClass = PopulationClass()
-        self.popclass.populate(solution_size, population_length, len(problem.foodlist) - 1)
-        
-        #self.popclass.population: list[ChromosomeClass] = self.popclass.population
-        
-        self.solution_size = solution_size
+        self.popclass.populate(population_length, len(problem.foodlist) - 1, solution_max_size, solution_min_size)
+                
         self.popclass.population_length = population_length
         self.mutation_rate = mutation_rate
         self.max_iterations: int = max_iterations
 
         self.best_fit_values: list = [] #melhores fit por geração
         self.best_calories_gen: list = [] #melhores calorias por geração
-        self.best_proteins_gen: list = [] #melhores proteínas por geração
+        self.best_macros_gen: list = [] #melhores macros por geração
         
     #Calcula fitness
     def fitness(self) -> list[ChromosomeClass]:
@@ -58,7 +56,7 @@ class GeneticAlgorithmOptimization:
                     protein_diff = abs(self.problem.target_protein - total_protein)
                     carbs_diff = abs(self.problem.target_carbs - total_carbs)
                     fats_diff = abs(self.problem.target_fat - total_fats)
-                    chromossome.fitness = 1 / (1 + protein_diff + carbs_diff + fats_diff)  # Higher fitness for smaller differences
+                    chromossome.fitness = 1 / (1 + protein_diff + carbs_diff + fats_diff) 
         return self.popclass.population
 
 
@@ -85,13 +83,19 @@ class GeneticAlgorithmOptimization:
                 self.popclass.population = self.fitness()
                 self.popclass.sort_population() # sort population by fitness (already defines the best fitness)
                 self.best_fit_values.append(self.popclass.best_fitness) 
+                
                 soma_calorias = 0
-                soma_proteinas = 0
+                soma_prot = 0
+                soma_fat = 0
+                soma_carbs = 0
                 for food in self.popclass.population[0].value:
                     soma_calorias += self.problem.foodlist[food].calories
-                    soma_proteinas += self.problem.foodlist[food].protein
+                    soma_fat += self.problem.foodlist[food].fat
+                    soma_carbs += self.problem.foodlist[food].carbs
+                    soma_prot += self.problem.foodlist[food].protein
+                    
                 self.best_calories_gen.append(soma_calorias)
-                self.best_proteins_gen.append(soma_proteinas)
+                self.best_macros_gen.append([soma_prot, soma_fat, soma_carbs])
 
                 print_stats(self.popclass, gen_count)
 
@@ -117,42 +121,48 @@ class GeneticAlgorithmOptimization:
             suma += int(x.calories)
         print(f"CALORIAS FINAIS: {suma}\n")
         
-        return self.popclass.population[0].value, self.best_fit_values, self.best_calories_gen, self.best_proteins_gen 
+        return self.popclass.population[0].value, self.best_fit_values, self.best_calories_gen, self.best_macros_gen 
 
 if __name__ == '__main__':
     data = NutritionDataFrame()
 
     ga = GeneticAlgorithmOptimization(
-        solution_size=10, 
         population_length=100, 
         problem=data,
     )
     
-    res, best_fit_values, best_calories_gen, best_proteins_gen = ga.run()
+    res, best_fit_values, best_calories_gen, best_macros_gen = ga.run()
 
     plt.figure(figsize=(18, 6))
 
     # Plot for fit convergence
-    plt.subplot(1, 4, 1)
-    plt.plot(best_fit_values, marker='o', color='green')
+    plt.subplot(1, 3, 1)
+    plt.plot(best_fit_values, marker='o', color='red')
     plt.title("Convergence of GA Fit")
     plt.xlabel("Iteration")
     plt.ylabel("Best Fit Sum") 
 
     # Plot for fit convergence
-    plt.subplot(1, 4, 2)
+    plt.subplot(1, 3, 2)
     plt.plot(best_calories_gen, marker='o', color='green')
     plt.title("Convergence of GA Calories")
     plt.xlabel("Iteration")
     plt.ylabel("Best Calories Sum") 
 
-    # Plot for fit convergence
-    plt.subplot(1, 4, 2)
-    plt.plot(best_proteins_gen, marker='o', color='green')
-    plt.title("Convergence of GA Proteins")
+    # Plot for macros convergence
+    plt.subplot(1, 3, 3)
+    # Extracting each macro component
+    proteins = [item[0] for item in best_macros_gen]
+    carbs = [item[1] for item in best_macros_gen]
+    fats = [item[2] for item in best_macros_gen]
+
+    plt.plot(proteins, marker='o', color='blue', label='Proteins')
+    plt.plot(carbs, marker='o', color='skyblue', label='Carbs')
+    plt.plot(fats, marker='o', color='navy', label='Fats')
+    plt.title("Convergence of GA Macros")
     plt.xlabel("Iteration")
-    plt.ylabel("Best Proteins Sum")
+    plt.ylabel("Best Macros Sum")
+    plt.legend()
 
     plt.tight_layout()
     plt.show()
-

@@ -18,26 +18,6 @@ fats = 0
 
 food_list = get_csv('data/foods.csv')
 
-entry_calories = None
-entry_protein = None
-entry_carbs = None
-entry_fats = None
-canvas_pie_chart = None
-
-num_ants_entry = None
-num_iterations_entry = None
-evaporation_rate_entry = None
-alpha_entry = None
-beta_entry = None
-population_length_entry = None
-max_iterations_entry = None 
-solution_max_size_entry = None
-solution_min_size_entry = None
-elite_size_entry = None
-convergence_rate_entry = None
-mutation_rate_entry = None
-canvas_pie_chart = None
-
 window = tk.Tk()
 window.title("Nutrition Goals")
 window.geometry("1100x600")
@@ -217,6 +197,8 @@ def plot_results(best_values, best_cal_values, best_macro_values, title, best_so
     tk.Button(scrollable_frame_tab1, text="Exit", font=("Helvetica", 14), command=window.destroy).grid(row=12, column=0, columnspan=2, pady=10, padx=20)
 
 def show_main_page():
+    global entry_calories, entry_protein, entry_carbs, entry_fats
+
     tk.Label(scrollable_frame_tab1, text="Calorie Objective:", font=("Helvetica", 14)).grid(row=0, column=0, pady=10)
     entry_calories = tk.Entry(scrollable_frame_tab1, font=("Helvetica", 14))
     entry_calories.grid(row=0, column=1, pady=10)
@@ -301,6 +283,9 @@ def delete_food(tree):
             break
 
 def show_settings_tab():
+    global num_ants_entry, num_iterations_entry, evaporation_rate_entry, alpha_entry, beta_entry
+    global population_length_entry, max_iterations_entry, solution_max_size_entry, solution_min_size_entry, elite_size_entry, convergence_rate_entry, mutation_rate_entry
+    
     # ACO settings
     tk.Label(scrollable_frame_tab3, text="ACO Settings", font=("Helvetica", 16)).grid(row=0, column=0, pady=10, columnspan=2)
     
@@ -379,6 +364,7 @@ def show_pie_chart(proteintemp, carbstemp, fatstemp):
 
 def confirm_inputs():
     try:
+        global calories, protein, carbs, fats, canvas_pie_chart
         calories = int(entry_calories.get())
         protein = int(entry_protein.get())
         carbs = int(entry_carbs.get())
@@ -398,6 +384,7 @@ def confirm_inputs():
         messagebox.showerror("Invalid input", "Please enter valid numbers for all fields.")
 
 def reset_inputs():
+    global canvas_pie_chart
     entry_calories.delete(0, tk.END)
     entry_protein.delete(0, tk.END)
     entry_carbs.delete(0, tk.END)

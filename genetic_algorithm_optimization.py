@@ -22,7 +22,7 @@ class GeneticAlgorithmOptimization:
         self.elite_size = elite_size
         self.max_portions = max_portions
         
-        self.problem = problem
+        self.problem: NutritionDataFrame = problem
         self.popclass: PopulationClass = PopulationClass()
         self.popclass.populate(population_length, len(problem.foodlist) - 1, solution_max_size, solution_min_size)
                 
@@ -37,10 +37,6 @@ class GeneticAlgorithmOptimization:
     #Calcula fitness
     def fitness(self) -> list[ChromosomeClass]:
         for chromossome in self.popclass.population:
-            total_protein = 0
-            total_carbs = 0
-            total_fats = 0
-            total_calories = 0
             gene_count = {}
             
             for _, gene in enumerate(chromossome.value):
@@ -51,18 +47,8 @@ class GeneticAlgorithmOptimization:
                 if gene_count[gene] > self.max_portions:
                     chromossome.fitness = 0
                     break
-                total_calories += int(self.problem.foodlist[gene].calories)
-                total_protein += int(self.problem.foodlist[gene].protein)
-                total_carbs += int(self.problem.foodlist[gene].carbs)
-                total_fats += int(self.problem.foodlist[gene].fat)
             else:
-                if total_calories > self.problem.max_calories:
-                    chromossome.fitness = 0
-                else:
-                    protein_diff = abs(self.problem.target_protein - total_protein)
-                    carbs_diff = abs(self.problem.target_carbs - total_carbs)
-                    fats_diff = abs(self.problem.target_fat - total_fats)
-                    chromossome.fitness = 1 / (1 + protein_diff + carbs_diff + fats_diff) 
+                chromossome.fitness = 1 / 1 + self.problem.evaluate(chromossome.value)
         return self.popclass.population
 
 
@@ -137,6 +123,13 @@ if __name__ == '__main__':
 
     ga = GeneticAlgorithmOptimization(
         population_length=100, 
+        max_iterations=200,
+        convergence_rate=0.8,
+        elite_size=2,
+        mutation_rate=0.03,
+        max_portions=5,
+        solution_max_size=25,
+        solution_min_size=5,
         problem=data,
     )
     

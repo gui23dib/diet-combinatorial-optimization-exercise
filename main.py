@@ -344,12 +344,12 @@ def show_settings_tab():
 
     tk.Label(scrollable_frame_tab3, text="Convergence Rate:", font=("Helvetica", 14)).grid(row=6, column=2, pady=10, sticky="e")
     convergence_rate_entry = tk.Entry(scrollable_frame_tab3, font=("Helvetica", 14))
-    convergence_rate_entry.insert(0, "0.7")
+    convergence_rate_entry.insert(0, "0.85")
     convergence_rate_entry.grid(row=6, column=3, pady=10, sticky="w")
 
     tk.Label(scrollable_frame_tab3, text="Mutation Rate:", font=("Helvetica", 14)).grid(row=7, column=2, pady=10, sticky="e")
     mutation_rate_entry = tk.Entry(scrollable_frame_tab3, font=("Helvetica", 14))
-    mutation_rate_entry.insert(0, "0.05")
+    mutation_rate_entry.insert(0, "0.03")
     mutation_rate_entry.grid(row=7, column=3, pady=10, sticky="w")
 
     tk.Button(scrollable_frame_tab3, text="Save", font=("Helvetica", 14)).grid(row=8, column=0, pady=10, padx=20, columnspan=4)

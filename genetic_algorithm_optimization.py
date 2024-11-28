@@ -1,5 +1,5 @@
 from classes.nutrition_dataframe import NutritionDataFrame
-from data.tools.utils import print_stats
+from genetic_alg.utils import print_stats
 from genetic_alg.population import PopulationClass
 from genetic_alg.chromossome import ChromosomeClass
 from matplotlib import pyplot as plt

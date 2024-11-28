@@ -78,7 +78,7 @@ class GeneticAlgorithmOptimization:
         try:
             gen_count: int = 0
             
-            while self.popclass.best_fitness != 1.0 and gen_count <= self.max_iterations:
+            while gen_count <= self.max_iterations:
                 self.popclass.population = self.fitness()
                 self.popclass.sort_population() # sort population by fitness (already defines the best fitness)
                 self.best_fit_values.append(self.popclass.best_fitness) 

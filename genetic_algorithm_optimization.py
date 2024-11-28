@@ -38,6 +38,7 @@ class GeneticAlgorithmOptimization:
     def fitness(self) -> list[ChromosomeClass]:
         for chromossome in self.popclass.population:
             gene_count = {}
+            reachedMaxPortions = False
             
             for _, gene in enumerate(chromossome.value):
                 if gene not in gene_count:
@@ -45,10 +46,13 @@ class GeneticAlgorithmOptimization:
                 gene_count[gene] += 1
                 
                 if gene_count[gene] > self.max_portions:
-                    chromossome.fitness = 0
+                    reachedMaxPortions = True
                     break
+
+            if reachedMaxPortions:
+                chromossome.fitness = 0
             else:
-                chromossome.fitness = 1 / 1 + self.problem.evaluate(chromossome.value)
+                chromossome.fitness = self.problem.evaluate(chromossome.value)
         return self.popclass.population
 
 

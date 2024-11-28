@@ -100,7 +100,7 @@ if __name__ == "__main__":
     aco = AntColonyOptimization(
         problem=df,
         num_ants=100,
-        num_iterations=500,
+        num_iterations=200,
         evaporation_rate=0.6,
         alpha=0.4,
         beta=0.8,

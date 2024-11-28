@@ -375,7 +375,7 @@ def confirm_inputs():
         canvas_pie_chart.draw()
         canvas_pie_chart.get_tk_widget().grid(row=6, columnspan=2)
         
-        window.geometry("800x800")
+        window.geometry("1100x800")
         
         confirm = messagebox.askyesno("Confirm Inputs", f"Calorie: {calories}\nProtein: {protein}\nCarbs: {carbs}\nFats: {fats}\n\nDo you want to proceed?")
         if confirm:

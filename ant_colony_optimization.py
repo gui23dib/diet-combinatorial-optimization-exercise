@@ -13,8 +13,6 @@ class AntColonyOptimization:
         self.pheromones = np.ones(len(problem.foodlist))
         self.best_solution = None
         self.best_value: float = float('-inf')
-        self.best_values = []
-        self.best_cal_values = []
         
         self.best_values = []
         self.best_cal_values = []
